@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Loto en salle</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="style_loto-bingo.css" rel="stylesheet" type="text/css"/>
+        <link rel="icon" type="image/jpg" href="boule53.jpg"/>
+        <script src="script.js" type="text/javascript"></script>
+    </head>
+    
+    <body>
+        <div id="page">
+            <header>
+                <h1>Loto en salle</h1>
+            </header>
+            
+            <div id="jeu">
+                <!--Zone d'affichage des cartons============================ -->
+                <div id="cartons">
+                    <!--Carton 0============================================ -->
+                    <div id="carton0" class="carton">
+                        <table>
+                            <script>
+                                for (var i=0; i<27; i++) {
+                                    switch (i%9) {
+                                        case 0: //début de ligne
+                                            document.write("<tr>");
+                                            creerNouvelle(i);
+                                            break;
+                                        case 8: //fin de ligne
+                                            creerNouvelle(i);
+                                            document.write("</tr>");
+                                            break;
+                                        default:
+                                            creerNouvelle(i);
+                                            break;
+                                    }
+                                }
+                            </script>
+                        </table>
+                    </div>
+                    <!--Carton 1============================================ -->
+                    <div id="carton1" class="carton" style="color: #0166FF">
+                        <script>construireTab(cartab1, 1);</script>
+                    </div>
+                    <!--Carton 2============================================ -->
+                    <div id="carton2" class="carton" style="color: #008194">
+                        <script>construireTab(cartab2, 2);</script>
+                    </div>
+                    <!--Carton 3============================================ -->
+                    <div id="carton3" class="carton" style="color: #019934">
+                        <script>construireTab(cartab3, 3);</script>
+                    </div>
+                </div>
+                
+                <!--Grille de pointage des numéros sortis=================== -->
+                <div id="grille">
+                    <nav id="menuNouveau">
+                        <ul>
+                            <li><a onclick="remplirNouvelle(0)">Vide</a></li>
+                            <li><a onclick="corrigerNouvelle()">Correction</a></li>
+                            <li><a id="btnValideNouveau" onclick="validerNouveau();">Valider</a></li>
+                        </ul>
+                    </nav>
+                    
+                    <!--Grille de pointage__________________________________ -->
+                    <script>grillePointage();</script>
+                    
+                    <nav>
+                        <fieldset>
+                            <!--Label permet de cliquer sur le texte-->
+                            <!--<legend>Titre</legend>-->
+                            <input type="radio" name="partie" id="quine" checked>
+                                <label for="quine">Quine</label>
+                            <input type="radio" name="partie" id="dQuine">
+                                <label for="dQuine">Double-quine</label>
+                            <input type="radio" name="partie" id="cartonP">
+                                <label for="cartonP">Carton plein</label>
+                        </fieldset>
+                        <ul>
+                            <li><a onclick="javascript:location.reload();">Démarquer</a></li>
+                            <li><a onclick="">Correction</a></li>
+                            <li><a onclick="nouveauCarton();">Nouveau</a></li>
+                        </ul>
+                    </nav>
+                    <p>
+                        Vous devez tout d’abord acheter un ou plusieurs cartons de loto (ou de bingo) au début de la partie. 
+                        Une personne va ensuite tirer des numéros compris entre 1 et 90 pour le loto (1 et 75 pour le bingo), 
+                        si le numéro tiré est sur votre carton, cochez le ! Pour cela, un haricot sec, un grain de maïs ou 
+                        un pion transparent (pour les pro du loto bingo) fera l’affaire. Si vous arrivez à compléter une ligne 
+                        en premier, c’est la quine ! Deux lignes, la double quine et le carton entier, c’est le carton plein !
+                    </p>
+                </div>
+            </div>
+            <!--Footer====================================================== -->
+            <footer>
+                <p>
+                    Programme développé par Mathias.
+                </p>
+            </footer>
+            <!--Modal quine================================================= -->
+            <div id="modalGagne" class="modal">
+                <div class="modal-content animate-top">
+                    <header class="container red">
+                        <span class="close" onclick="document.getElementById('modalGagne').style.display='none'">&times;</span>
+                        <h2>Gagné !</h2>
+                    </header>
+                    <div class="container">
+                        <h1 id="textModal">X</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
