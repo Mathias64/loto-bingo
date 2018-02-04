@@ -11,10 +11,36 @@ var indiceNouveau = 0;
             
 var nbCartons = 3;
 var cartab0 = new Array();
-var cartab1 = [0,18,0,0,41,56,67,0,83,2,0,0,37,0,0,61,76,88,0,15,20,0,44,52,0,72,0]; //0166FF
-var cartab2 = [4,0,0,31,41,0,0,76,85,0,11,21,0,48,0,60,0,82,8,0,25,34,0,54,0,75,0]; //#019934
-var cartab3 = [0,19,22,0,45,0,63,77,0,5,0,24,38,0,51,0,71,0,0,12,0,30,49,0,66,0,89]; //#008194
-var cartab4 = [0,11,0,36,0,59,69,0,87,0,19,23,0,41,55,0,74,0,7,0,22,0,44,0,62,0,81]; //#5731BA
+
+var cartab1 = {
+    name: "carton1",
+    identifiant: 1,
+    couleur: "#0166FF",
+    numeros: [0,18,0,0,41,56,67,0,83,2,0,0,37,0,0,61,76,88,0,15,20,0,44,52,0,72,0],
+    compteur:[0,0,0]
+};
+var cartab2 = {
+    name: "carton2",
+    identifiant: 2,
+    couleur: "#019934",
+    numeros: [4,0,0,31,41,0,0,76,85,0,11,21,0,48,0,60,0,82,8,0,25,34,0,54,0,75,0],
+    compteur: [0,0,0]
+};
+var cartab3 = {
+    name: "carton3",
+    identifiant: 3,
+    couleur: "#008194",
+    numeros: [0,19,22,0,45,0,63,77,0,5,0,24,38,0,51,0,71,0,0,12,0,30,49,0,66,0,89],
+    compteur: [0,0,0]
+};
+var cartab4 = {
+    name: "carton4",
+    identifiant: 4,
+    couleur: "#5731BA",
+    numeros: [0,11,0,36,0,59,69,0,87,0,19,23,0,41,55,0,74,0,7,0,22,0,44,0,62,0,81],
+    compteur: [0,0,0]
+};
+
 var compteur1 = [0,0,0];
 var compteur2 = [0,0,0];
 var compteur3 = [0,0,0];
@@ -106,14 +132,6 @@ function afficherModal(quineOUcarton) {
 //                }
 //            };
 
-function remplirCase(cartab, x, i) {
-    var y = (i<10)? "0"+i : i;
-    if (cartab[i] === 0) {
-        document.write("<td id=\"" + x + y + "\"><div>'0'</div></td>");
-    } else {
-        document.write("<td id=\"" + x + y + "\">" + cartab[i] + "</td>");
-    }
-}
 
 // Nouveau carton ==============================================================
 // Déclenché à l'appui sur le bouton "Nouveau"----------------------------------
@@ -203,22 +221,32 @@ function validerNouveau() {
 //        divS.insertBefore(divN, div0.nextSibling);
 //    }
     
-    function construireTab(cartab, x) {
+    function dessinerCarton(cartab) {
+        document.write("<div id=\""+cartab.name+"\" class=\"carton\" style=\"color: "+cartab.couleur+"\">");
         document.write("<table>");
             for (var i = 0; i < 27; i++) {
                 switch (i%9) {
                     case 0: //début de ligne
                         document.write("<tr>");
-                        remplirCase(cartab, x, i);
+                        remplirCase(cartab, i);
                         break;
                     case 8: //fin de ligne
-                        remplirCase(cartab, x, i);
+                        remplirCase(cartab, i);
                         document.write("</tr>");
                         break;
                     default:
-                        remplirCase(cartab, x, i);
+                        remplirCase(cartab, i);
                         break;
                 }
             }
         document.write("</table>");
+        document.write("</div>");
     }
+        function remplirCase(cartab, i) {
+            var y = (i<10) ? "0"+i : i;
+            if (cartab.numeros[i] === 0) {
+                document.write("<td id=\"" + cartab.identifiant + y + "\"><div>'0'</div></td>");
+            } else {
+                document.write("<td id=\"" + cartab.identifiant + y + "\">" + cartab.numeros[i] + "</td>");
+            }
+        }
