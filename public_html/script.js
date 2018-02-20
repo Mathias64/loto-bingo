@@ -16,35 +16,30 @@ var cartab1 = {
     name: "carton1",
     identifiant: 1,
     couleur: "#0166FF",
-    numeros: [0,18,0,0,41,56,67,0,83,2,0,0,37,0,0,61,76,88,0,15,20,0,44,52,0,72,0],
+    numeros: [18,41,56,67,83,2,37,61,76,88,15,20,44,52,72],
     compteur:[0,0,0]
 };
 var cartab2 = {
     name: "carton2",
     identifiant: 2,
     couleur: "#019934",
-    numeros: [4,0,0,31,41,0,0,76,85,0,11,21,0,48,0,60,0,82,8,0,25,34,0,54,0,75,0],
+    numeros: [4,31,41,76,85,11,21,48,60,82,8,25,34,54,75],
     compteur: [0,0,0]
 };
 var cartab3 = {
     name: "carton3",
     identifiant: 3,
     couleur: "#008194",
-    numeros: [0,19,22,0,45,0,63,77,0,5,0,24,38,0,51,0,71,0,0,12,0,30,49,0,66,0,89],
+    numeros: [19,22,45,63,77,5,24,38,51,71,12,30,49,66,89],
     compteur: [0,0,0]
 };
 var cartab4 = {
     name: "carton4",
     identifiant: 4,
     couleur: "#5731BA",
-    numeros: [0,11,0,36,0,59,69,0,87,0,19,23,0,41,55,0,74,0,7,0,22,0,44,0,62,0,81],
+    numeros: [11,36,59,69,87,19,23,41,55,74,7,22,44,62,81],
     compteur: [0,0,0]
 };
-
-var compteur1 = [0,0,0];
-var compteur2 = [0,0,0];
-var compteur3 = [0,0,0];
-var compteur4 = [0,0,0];
 
 
 // Gère tous les traitements à faire lorsqu'on appuie sur une touche
@@ -68,23 +63,24 @@ function proposer(element) {
             
             // On cherche le numéro dans le carton
             var cartabI = eval("cartab"+i);
-            var indI = cartabI.indexOf(numero);
+            var indI = cartabI.numeros.indexOf(numero);
             
             if (indI !== -1) {
+                var ind1 = parseInt(numero/10); // On récupère la colonne (par la dizaine)
+                var ind2 = parseInt(indI/5);    // On récupère la ligne (par groupe de 5)
+                var indice = 100*i + ind2*10 + ind1;
                 // puis on le coche
-                var indice = 100*i + indI;
                 changeCouleur(document.getElementById(indice), "tomato");
 
-                var compteurI = eval("compteur" +i);
                 // Incrémentation de la ligne
-                compteurI[parseInt(indI/9)]++;
+                cartabI.compteur[parseInt(indI/5)]++;
                 // Mesure de l'avancement des quines ou du carton plein
                 var radio = Array.from(document.querySelectorAll('fieldset input'));
                 var partie = radio.length && radio.find(r => r.checked).id;
                 switch (partie) {
                     case 'quine':
-                        for (var q in compteurI) {
-                            if (compteurI[q] === 2) { //Nombre de numéros à trouver pour une quine
+                        for (var q in cartabI.compteur) {
+                            if (cartabI.compteur[q] === 5) { //Nombre de numéros à trouver pour une quine
                                 afficherModal("Quine"); // Texte du modal
                                 document.getElementById('cartonP').checked = true;
                             }
@@ -95,10 +91,10 @@ function proposer(element) {
                         break;
                     case 'cartonP':
                         var tot = 0;
-                        for (var q in compteurI) {
-                           tot += compteurI[q];
+                        for (var q in cartabI.compteur) {
+                           tot += cartabI.compteur[q];
                         }
-                        if (tot === 5) { //Nombre de numéros à trouver pour un carton plein
+                        if (tot === 15) { //Nombre de numéros à trouver pour un carton plein
                             afficherModal("Carton plein"); // Texte du modal
                             fini = true; //Fin de la partie
                         }
@@ -116,9 +112,9 @@ function changeCouleur(element, couleur) {
 
 function afficherModal(quineOUcarton) {
     document.getElementById('textModal').innerHTML = quineOUcarton; // Texte du modal
-    document.getElementById('modalGagne').style.display = "block";
-    gagne=new Audio("gagne.mp3");
-    gagne.play();
+    document.getElementById('modalGagne').style.display = "block";  // Affichage du modal
+    gagne=new Audio("gagne.mp3");   // Chargement du son
+    gagne.play();                   // Envoi du son
 }
             // When the user clicks on <span> (x), close the modal
 //            span.onclick = function() {
@@ -224,29 +220,23 @@ function validerNouveau() {
     function dessinerCarton(cartab) {
         document.write("<div id=\""+cartab.name+"\" class=\"carton\" style=\"color: "+cartab.couleur+"\">");
         document.write("<table>");
-            for (var i = 0; i < 27; i++) {
-                switch (i%9) {
-                    case 0: //début de ligne
-                        document.write("<tr>");
-                        remplirCase(cartab, i);
-                        break;
-                    case 8: //fin de ligne
-                        remplirCase(cartab, i);
-                        document.write("</tr>");
-                        break;
-                    default:
-                        remplirCase(cartab, i);
-                        break;
+        var j = 0;
+        for (var l = 0; l < 3; l++) {   // 3 lignes
+            document.write("<tr>");     //début de ligne
+            max = 10;
+            for (var i = 0; i < 9; i++) { // 9 cases par ligne
+                var y = (l<1) ? "0"+i : l*10 + i; // Numérotation des cases (id)
+                var finDeLigne = (j >= (l+1)*5);    // pour remplir les cases vides en fin de lignes
+                if (finDeLigne || cartab.numeros[j] >= max && cartab.numeros[j] !== 90) {
+                    document.write("<td id=\"" + cartab.identifiant + y + "\"><div>'0'</div></td>");
+                } else {
+                    document.write("<td id=\"" + cartab.identifiant + y + "\">" + cartab.numeros[j] + "</td>");
+                    j++;
                 }
+                max += 10;
             }
+            document.write("</tr>");    //fin de ligne
+        }
         document.write("</table>");
         document.write("</div>");
     }
-        function remplirCase(cartab, i) {
-            var y = (i<10) ? "0"+i : i;
-            if (cartab.numeros[i] === 0) {
-                document.write("<td id=\"" + cartab.identifiant + y + "\"><div>'0'</div></td>");
-            } else {
-                document.write("<td id=\"" + cartab.identifiant + y + "\">" + cartab.numeros[i] + "</td>");
-            }
-        }
