@@ -8,8 +8,9 @@
 var fini=false;		// true si le jeu est terminé
 var nouveau = false;
 var indiceNouveau = 0;
+var max = 10;
             
-var nbCartons = 3;
+var nbCartons = 4;
 var cartab0 = new Array();
 
 var cartab1 = {
@@ -136,6 +137,7 @@ function nouveauCarton() {
     document.getElementById('menuNouveau').style.display = "block";
     document.getElementById('carton0').style.display = "block";
     document.getElementById('0').style.backgroundColor = "LightBlue";
+    max = 9;
 }
 
 function creerNouvelle(i) {
@@ -143,24 +145,37 @@ function creerNouvelle(i) {
 }
 
 function remplirNouvelle(num) {
-    // enregistrement des numéros dans le tableau 0
-    cartab0.push((num < 10) ? "0" + num : num );
+    // pour remplir les cases vides en fin de lignes
+//    var finDeLigne = (parseInt((cartab0.length+1)/5) > parseInt(indiceNouveau/9));
+    var finDeLigne = (cartab0.length%5 === 0) && (indiceNouveau%9 !== 0);
     // Remplissage des cases soit par une div (0, vide) soit par le numéro
-    if (num === 0) {
-        document.getElementById(indiceNouveau).innerHTML = "<div>'0'</div>";
+    while (finDeLigne || num > max) {
+        remplirCase("<div>'0'</div>");
     }
-    else {
-        document.getElementById(indiceNouveau).innerHTML = num;
+    remplirCase(num);
+    // enregistrement des numéros dans le tableau 0
+    cartab0.push(num);
+    // Pour finir le tableau avec des cases vides quand on a tous les numéros
+    if (cartab0.length === 15) {
+        while (indiceNouveau < 27) {
+        remplirCase("<div>'0'</div>");
+        }
     }
+    
+    if (indiceNouveau === 27) {// Si le tableau est rempli, on propose de valider
+            document.getElementById('btnValideNouveau').style.backgroundColor = "red";
+    } else {// Sinon la nouvelle case est coloriée
+        document.getElementById(indiceNouveau).style.backgroundColor = "LightBlue";
+    }
+}
+function remplirCase(contenu) {
+    document.getElementById(indiceNouveau).innerHTML = contenu;
+    max += 10;
+    if (max > 90) max = 10;
     // La case repasse en blanc
     document.getElementById(indiceNouveau).style.backgroundColor = "white";
     indiceNouveau++; // L'indice avance d'un case
-    if (indiceNouveau === 9) {// Si le tableau est rempli, on propose de valider          9=>27
-            document.getElementById('btnValideNouveau').style.backgroundColor = "red";
-    } else {// Sinon la nouvelle case est coloriée
-    document.getElementById(indiceNouveau).style.backgroundColor = "LightBlue";
-    }
-};
+}
 
 function corrigerNouvelle(num) {
     if (indiceNouveau === 0) return ; // voir avec carton0.length
@@ -171,7 +186,7 @@ function corrigerNouvelle(num) {
     document.getElementById(indiceNouveau).style.backgroundColor = "white";
     indiceNouveau--;
     document.getElementById(indiceNouveau).innerHTML = "?";
-    document.getElementById(indiceNouveau).style.backgroundColor = "lightyellow";
+    document.getElementById(indiceNouveau).style.backgroundColor = "LightBlue";
 }
 
 function validerNouveau() {
