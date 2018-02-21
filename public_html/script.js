@@ -13,6 +13,14 @@ var max = 10;
 var nbCartons = 4;
 var cartab0 = new Array();
 
+function carton(numeros, couleur) {
+    this.name = "carton" + nbCartons + 1;
+    this.identifiant = nbCartons + 1;
+    this.couleur = couleur;
+    this.numeros = numeros;
+    this.compteur = [0,0,0];
+}
+
 var cartab1 = {
     name: "carton1",
     identifiant: 1,
@@ -71,8 +79,11 @@ function proposer(element) {
                 var ind2 = parseInt(indI/5);    // On récupère la ligne (par groupe de 5)
                 var indice = 100*i + ind2*10 + ind1;
                 // puis on le coche
-                changeCouleur(document.getElementById(indice), "tomato");
-
+//                changeCouleur(document.getElementById(indice), "tomato");
+                // Ajout d'un pion
+                var pion = document.createElement('div');
+                pion.className = 'pion';
+                document.getElementById(indice).appendChild(pion);
                 // Incrémentation de la ligne
                 cartabI.compteur[parseInt(indI/5)]++;
                 // Mesure de l'avancement des quines ou du carton plein
